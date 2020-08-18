@@ -59,17 +59,17 @@ def evaluate(net, test_dataloader):
 
 
 if __name__ == '__main__':
-    lidar_data_train = np.load("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/lidar_input/lidar_train.npz")['input']
-    lidar_data_test = np.load("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/lidar_input/lidar_validation.npz")['input']
+    lidar_data_train = np.load("./data/baseline_data/lidar_input/lidar_train.npz")['input']
+    lidar_data_test = np.load("./data/baseline_data/lidar_input/lidar_validation.npz")['input']
 
-    coord_data_train = np.load("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/coord_input/coord_train.npz")['coordinates']
-    coord_data_test = np.load("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/coord_input/coord_validation.npz")['coordinates']
+    coord_data_train = np.load("./data/baseline_data/coord_input/coord_train.npz")['coordinates']
+    coord_data_test = np.load("./data/baseline_data/coord_input/coord_validation.npz")['coordinates']
 
-    beam_data_train = np.load("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/beam_output/beams_output_train.npz")['output_classification']
-    beam_data_test = np.load("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/beam_output/beams_output_validation.npz")['output_classification']
+    beam_data_train = np.load("./data/baseline_data/beam_output/beams_output_train.npz")['output_classification']
+    beam_data_test = np.load("./data/baseline_data/beam_output/beams_output_validation.npz")['output_classification']
 
-    beam_output_train = get_beam_output("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/beam_output/beams_output_train.npz")
-    beam_output_test = get_beam_output("/home/galidor/Documents/ITU_Beam_Selection/data/baseline_data/beam_output/beams_output_validation.npz")
+    beam_output_train = get_beam_output("./data/baseline_data/beam_output/beams_output_train.npz")
+    beam_output_test = get_beam_output("./data/baseline_data/beam_output/beams_output_validation.npz")
 
     lidar_data_train = torch.from_numpy(lidar_data_train).float()
     lidar_data_test = torch.from_numpy(lidar_data_test).float()
