@@ -86,10 +86,10 @@ if __name__ == '__main__':
     model = LidarMarcus().cuda()
     optimizer = optim.Adam(model.parameters())
     criterion = torch.nn.BCEWithLogitsLoss(reduction='mean').cuda()
-    tbar = tqdm.tqdm(enumerate(train_dataloader), total=len(train_dataloader))
 
     evaluate(model, test_dataloader)
     for i in range(100):
+        tbar = tqdm.tqdm(enumerate(train_dataloader), total=len(train_dataloader))
         for i, data in tbar:
             optimizer.zero_grad()
             lidar, beams = data
