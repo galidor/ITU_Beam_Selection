@@ -8,7 +8,7 @@ class Flatten(nn.Module):
 class LidarMarcus(nn.Module):
     def __init__(self):
         super(LidarMarcus, self).__init__()
-        self.layers = nn.Sequential(nn.Conv2d(20, 10, kernel_size=13, stride=1, padding=6),
+        self.layers = nn.Sequential(nn.Conv2d(10, 10, kernel_size=13, stride=1, padding=6),
                                     nn.ReLU(),
                                     nn.Conv2d(10, 30, kernel_size=11, stride=1, padding=5),
                                     nn.ReLU(),
@@ -27,7 +27,8 @@ class LidarMarcus(nn.Module):
                                     nn.Conv2d(10, 1, kernel_size=1, stride=1),
                                     nn.ReLU(),
                                     Flatten(),
-                                    nn.Linear(500, 256))
+                                    nn.Linear(1000, 256))
 
     def forward(self, x):
+        x = x.permute(0, 3, 1, 2)
         return self.layers(x)

@@ -85,10 +85,12 @@ if __name__ == '__main__':
 
     model = LidarMarcus().cuda()
     optimizer = optim.Adam(model.parameters())
-    criterion = torch.nn.BCEWithLogitsLoss(reduction='mean').cuda()
+    # criterion = torch.nn.BCEWithLogitsLoss(reduction='mean').cuda()
+    criterion = lambda y_pred, y_true: -torch.sum(torch.mean(y_true * torch.log(y_pred + 1e-30), axis=0))
 
     evaluate(model, test_dataloader)
     for i in range(100):
+        accumulated_loss = []
         tbar = tqdm.tqdm(enumerate(train_dataloader), total=len(train_dataloader))
         for i, data in tbar:
             optimizer.zero_grad()
@@ -96,8 +98,9 @@ if __name__ == '__main__':
             lidar = lidar.cuda()
             beams = beams.cuda()
             preds = model(lidar)
-            loss = criterion(preds, beams)
+            loss = criterion(F.softmax(preds, dim=1), beams)
             loss.backward()
             optimizer.step()
-            tbar.set_postfix_str(str(loss.item()))
+            accumulated_loss.append(loss.item())
+            tbar.set_postfix_str(str(sum(accumulated_loss)/len(accumulated_loss)))
         evaluate(model, test_dataloader)
