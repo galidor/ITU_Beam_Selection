@@ -37,17 +37,24 @@ class LidarMarcus(nn.Module):
 class Lidar3D(nn.Module):
     def __init__(self):
         super(Lidar3D, self).__init__()
+        dropout_prob = 0.3
         self.conv1 = nn.Conv3d(1, 10, (5, 11, 3), stride=2, padding=(2, 5, 1))
+        self.bn1 = nn.BatchNorm3d(10)
         self.relu1 = nn.ReLU()
         self.conv2 = nn.Conv3d(10, 20, (5, 11, 3), stride=1, padding=(2, 5, 1))
+        self.bn1 = nn.BatchNorm3d(20)
         self.relu2 = nn.ReLU()
         self.conv3 = nn.Conv3d(20, 20, (5, 11, 3), stride=1, padding=(2, 5, 1))
+        self.bn1 = nn.BatchNorm3d(20)
         self.relu3 = nn.ReLU()
         self.conv4 = nn.Conv3d(20, 20, (5, 11, 3), stride=(1, 1, 2), padding=(2, 5, 1))
+        self.bn1 = nn.BatchNorm3d(20)
         self.relu4 = nn.ReLU()
         self.conv5 = nn.Conv3d(20, 20, (5, 11, 3), stride=(1, 1, 5), padding=(2, 5, 1))
+        self.bn1 = nn.BatchNorm3d(20)
         self.relu5 = nn.ReLU()
         self.conv6 = nn.Conv2d(20, 10, kernel_size=(3, 11), stride=(2, 5), padding=(1, 5))
+        self.bn1 = nn.BatchNorm3d(10)
         self.relu6 = nn.ReLU()
         self.linear7 = nn.Linear(1000, 256)
 
