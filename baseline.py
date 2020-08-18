@@ -89,15 +89,15 @@ if __name__ == '__main__':
     tbar = tqdm.tqdm(enumerate(train_dataloader), total=len(train_dataloader))
 
     evaluate(model, test_dataloader)
-
-    for i, data in tbar:
-        optimizer.zero_grad()
-        lidar, beams = data
-        lidar = lidar.cuda()
-        beams = beams.cuda()
-        preds = model(lidar)
-        loss = criterion(preds, beams)
-        loss.backward()
-        optimizer.step()
-        tbar.set_postfix_str(str(loss.item()))
-    evaluate(model, test_dataloader)
+    for i in range(100):
+        for i, data in tbar:
+            optimizer.zero_grad()
+            lidar, beams = data
+            lidar = lidar.cuda()
+            beams = beams.cuda()
+            preds = model(lidar)
+            loss = criterion(preds, beams)
+            loss.backward()
+            optimizer.step()
+            tbar.set_postfix_str(str(loss.item()))
+        evaluate(model, test_dataloader)
