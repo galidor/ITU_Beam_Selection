@@ -80,7 +80,7 @@ if __name__ == '__main__':
     beam_output_test = torch.from_numpy(beam_output_test[0]).float()
 
     train_dataset = TensorDataset(lidar_data_train, beam_output_train)
-    train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 
     test_dataset = TensorDataset(lidar_data_test, beam_output_test)
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
@@ -102,10 +102,11 @@ if __name__ == '__main__':
             beams = beams.cuda()
             preds = model(lidar)
             loss = criterion(F.softmax(preds, dim=1), beams)
-            top_10.update((F.softmax(preds), torch.argmax(beams)))
+            # top_1.update((F.softmax(preds), torch.argmax(beams)))
             loss.backward()
             optimizer.step()
             accumulated_loss.append(loss.item())
-            tbar.set_postfix_str(str(sum(accumulated_loss)/len(accumulated_loss))[:5] + ' ' + str(top_1.compute())[:5])
-        top_10.reset()
+            tbar.set_postfix_str(str(sum(accumulated_loss)/len(accumulated_loss))[:5])
+        # top_1.reset()
         evaluate(model, test_dataloader)
+        model.train()
