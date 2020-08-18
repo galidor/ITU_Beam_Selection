@@ -45,16 +45,18 @@ def get_beam_output(output_file):
 def evaluate(net, test_dataloader):
     with torch.no_grad():
         net.eval()
-        top_10 = TopKCategoricalAccuracy(k=10)
+        top_1 = TopKCategoricalAccuracy(k=1)
         for i, data in enumerate(test_dataloader):
             lidar, beams = data
             lidar = lidar.cuda()
             beams = beams.cuda()
             preds = net(lidar)
             preds = F.softmax(preds, dim=1)
-            top_10.update((preds, beams))
+            # print(top_k_accuracy(preds, beams, 10))
+            # exit()
+            top_1.update((preds, torch.argmax(beams)))
         net.train()
-        print(top_10.compute())
+        print(top_1.compute())
 
 
 
@@ -78,7 +80,7 @@ if __name__ == '__main__':
     beam_output_test = torch.from_numpy(beam_output_test[0]).float()
 
     train_dataset = TensorDataset(lidar_data_train, beam_output_train)
-    train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True)
 
     test_dataset = TensorDataset(lidar_data_test, beam_output_test)
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
@@ -89,6 +91,7 @@ if __name__ == '__main__':
     criterion = lambda y_pred, y_true: -torch.sum(torch.mean(y_true * torch.log(y_pred + 1e-30), axis=0))
 
     evaluate(model, test_dataloader)
+    top_1 = TopKCategoricalAccuracy(k=1)
     for i in range(100):
         accumulated_loss = []
         tbar = tqdm.tqdm(enumerate(train_dataloader), total=len(train_dataloader))
@@ -99,8 +102,10 @@ if __name__ == '__main__':
             beams = beams.cuda()
             preds = model(lidar)
             loss = criterion(F.softmax(preds, dim=1), beams)
+            top_10.update((F.softmax(preds), torch.argmax(beams)))
             loss.backward()
             optimizer.step()
             accumulated_loss.append(loss.item())
-            tbar.set_postfix_str(str(sum(accumulated_loss)/len(accumulated_loss)))
+            tbar.set_postfix_str(str(sum(accumulated_loss)/len(accumulated_loss))[:5] + ' ' + str(top_1.compute())[:5])
+        top_10.reset()
         evaluate(model, test_dataloader)
