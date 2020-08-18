@@ -80,7 +80,7 @@ if __name__ == '__main__':
     beam_output_test = torch.from_numpy(beam_output_test[0]).float()
 
     train_dataset = TensorDataset(lidar_data_train, beam_output_train)
-    train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
     test_dataset = TensorDataset(lidar_data_test, beam_output_test)
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
