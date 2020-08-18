@@ -1,4 +1,4 @@
-from models import LidarMarcus
+from models import LidarMarcus, Lidar3D
 from torch import nn
 from torchvision import transforms
 import numpy as np
@@ -85,12 +85,12 @@ if __name__ == '__main__':
     test_dataset = TensorDataset(lidar_data_test, beam_output_test)
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
-    model = LidarMarcus().cuda()
+    model = Lidar3D().cuda()
     optimizer = optim.Adam(model.parameters())
     # criterion = torch.nn.BCEWithLogitsLoss(reduction='mean').cuda()
     criterion = lambda y_pred, y_true: -torch.sum(torch.mean(y_true * torch.log(y_pred + 1e-30), axis=0))
 
-    evaluate(model, test_dataloader)
+    # evaluate(model, test_dataloader)
     top_1 = TopKCategoricalAccuracy(k=1)
     for i in range(100):
         accumulated_loss = []

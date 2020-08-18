@@ -32,3 +32,40 @@ class LidarMarcus(nn.Module):
     def forward(self, x):
         x = x.permute(0, 3, 1, 2)
         return self.layers(x)
+
+
+class Lidar3D(nn.Module):
+    def __init__(self):
+        super(Lidar3D, self).__init__()
+        self.conv1 = nn.Conv3d(1, 10, (5, 11, 3), stride=2, padding=(2, 5, 1))
+        self.relu1 = nn.ReLU()
+        self.conv2 = nn.Conv3d(10, 20, (5, 11, 3), stride=1, padding=(2, 5, 1))
+        self.relu2 = nn.ReLU()
+        self.conv3 = nn.Conv3d(20, 20, (5, 11, 3), stride=1, padding=(2, 5, 1))
+        self.relu3 = nn.ReLU()
+        self.conv4 = nn.Conv3d(20, 20, (5, 11, 3), stride=(1, 1, 2), padding=(2, 5, 1))
+        self.relu4 = nn.ReLU()
+        self.conv5 = nn.Conv3d(20, 20, (5, 11, 3), stride=(1, 1, 5), padding=(2, 5, 1))
+        self.relu5 = nn.ReLU()
+        self.conv6 = nn.Conv2d(20, 10, kernel_size=(3, 11), stride=(2, 5), padding=(1, 5))
+        self.relu6 = nn.ReLU()
+        self.linear7 = nn.Linear(1000, 256)
+
+    def forward(self, x):
+        x = x.unsqueeze(1)
+        x = self.conv1(x)
+        x = self.relu1(x)
+        x = self.conv2(x)
+        x = self.relu2(x)
+        x = self.conv3(x)
+        x = self.relu3(x)
+        x = self.conv4(x)
+        x = self.relu4(x)
+        x = self.conv5(x)
+        x = self.relu5(x)
+        x = x.squeeze(4)
+        x = self.conv6(x)
+        x = self.relu6(x)
+        x = x.view(-1, 1000)
+        x = self.linear7(x)
+        return x
