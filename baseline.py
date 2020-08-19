@@ -47,10 +47,10 @@ def evaluate(net, test_dataloader):
         net.eval()
         top_1 = TopKCategoricalAccuracy(k=1)
         for i, data in enumerate(test_dataloader):
-            lidar, beams = data
+            lidar, beams, _ = data
             lidar = lidar.cuda()
             beams = beams.cuda()
-            preds = net(lidar)
+            preds, _ = net(lidar)
             preds = F.softmax(preds, dim=1)
             # print(top_k_accuracy(preds, beams, 10))
             # exit()
@@ -70,25 +70,40 @@ if __name__ == '__main__':
     beam_data_train = np.load("./data/baseline_data/beam_output/beams_output_train.npz")['output_classification']
     beam_data_test = np.load("./data/baseline_data/beam_output/beams_output_validation.npz")['output_classification']
 
+    beam_data_train = torch.from_numpy((np.abs(beam_data_train)/np.max(np.abs(beam_data_train))).reshape(beam_data_train.shape[0], 256)).float()
+    beam_data_test = torch.from_numpy((np.abs(beam_data_test) / np.max(np.abs(beam_data_test))).reshape(beam_data_test.shape[0], 256)).float()
+
     beam_output_train = get_beam_output("./data/baseline_data/beam_output/beams_output_train.npz")
     beam_output_test = get_beam_output("./data/baseline_data/beam_output/beams_output_validation.npz")
 
     lidar_data_train = torch.from_numpy(lidar_data_train).float()
     lidar_data_test = torch.from_numpy(lidar_data_test).float()
 
+    # lidar_data_train[lidar_data_train==1] = -3
+    # lidar_data_train[lidar_data_train==0] = 1
+    # lidar_data_train[lidar_data_train==-3] = 0
+    #
+    # lidar_data_test[lidar_data_test == 1] = -3
+    # lidar_data_test[lidar_data_test == 0] = 1
+    # lidar_data_test[lidar_data_test == -3] = 0
+
+
     beam_output_train = torch.from_numpy(beam_output_train[0]).float()
     beam_output_test = torch.from_numpy(beam_output_test[0]).float()
 
-    train_dataset = TensorDataset(lidar_data_train, beam_output_train)
-    train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    train_dataset = TensorDataset(lidar_data_train, beam_output_train, beam_data_train)
+    train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 
-    test_dataset = TensorDataset(lidar_data_test, beam_output_test)
+    test_dataset = TensorDataset(lidar_data_test, beam_output_test, beam_data_test)
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
     model = Lidar3D().cuda()
-    optimizer = optim.Adam(model.parameters())
+    optimizer = optim.Adam(model.parameters(), weight_decay=1e-3)
+    # optimizer = optim.SGD(model.parameters(), lr=0.1)
+    # scheduler = optim.lr_scheduler.StepLR(optimizer, 5, 0.1)
     # criterion = torch.nn.BCEWithLogitsLoss(reduction='mean').cuda()
-    criterion = lambda y_pred, y_true: -torch.sum(torch.mean(y_true * torch.log(y_pred + 1e-30), axis=0))
+    criterion = lambda y_pred, y_true: -torch.sum(torch.mean(y_true[y_pred>0] * torch.log(y_pred[y_pred>0]), axis=0))
+    mse = nn.MSELoss(reduction='mean')
 
     # evaluate(model, test_dataloader)
     top_1 = TopKCategoricalAccuracy(k=1)
@@ -97,10 +112,11 @@ if __name__ == '__main__':
         tbar = tqdm.tqdm(enumerate(train_dataloader), total=len(train_dataloader))
         for i, data in tbar:
             optimizer.zero_grad()
-            lidar, beams = data
+            lidar, beams, beams_power = data
             lidar = lidar.cuda()
             beams = beams.cuda()
-            preds = model(lidar)
+            beams_power = beams_power.cuda()
+            preds, power = model(lidar)
             loss = criterion(F.softmax(preds, dim=1), beams)
             # top_1.update((F.softmax(preds), torch.argmax(beams)))
             loss.backward()
@@ -108,5 +124,6 @@ if __name__ == '__main__':
             accumulated_loss.append(loss.item())
             tbar.set_postfix_str(str(sum(accumulated_loss)/len(accumulated_loss))[:5])
         # top_1.reset()
+        # scheduler.step()
         evaluate(model, test_dataloader)
         model.train()
