@@ -81,6 +81,5 @@ class Lidar3D(nn.Module):
         x = self.bn6(x)
         x = self.relu6(x)
         x = x.view(-1, 1000)
-        pred = self.linear7(x)
-        power = self.linear8(x)
-        return pred, power
+        x = self.linear7(x)
+        return x
