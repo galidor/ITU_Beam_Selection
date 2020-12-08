@@ -47,9 +47,9 @@ Please note, that if the validation data are not provided, training data will be
 In order to evaluate pretrained model, simply run evaluate.py, as follows:
 ```
 $ python beam_test_model.py --lidar_test_data <path to the LIDAR baseline test .npz file>
-                             --beam_test_data <path to the baseline test beam .npz file>
-                             --model_path <path, where your model is stored>
-                             --preds_csv_path <path, where you want your .csv file with the predictions to be stored>
+                            --beam_test_data <path to the baseline test beam .npz file>
+                            --model_path <path, where your model is stored>
+                            --preds_csv_path <path, where you want your .csv file with the predictions to be stored>
 ```
 
 ## Questions?
