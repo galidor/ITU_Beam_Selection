@@ -5,7 +5,7 @@
 ## Authors
 <b>Team Name:</b> Imperial_IPC1
 
-<b>Supervising faculty member</b>: Dr. Deniz Gunduz, Imperial College London, Email: d.gunduz@imperial.ac.uk
+<b>Supervising faculty member</b>: Prof. Deniz Gunduz, Imperial College London, Email: d.gunduz@imperial.ac.uk
 
 <b>Team members</b>:
 * Dr. Mahdi Boloursaz Mashhadi (PostDoc Team Leader), Imperial College London, Email: m.boloursaz-mashhadi@imperial.ac.uk
