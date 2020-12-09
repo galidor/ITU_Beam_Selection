@@ -20,6 +20,8 @@ $ pip install -r requirements.txt
 ```
 Since our code usues GPU acceleration, having CUDA capable device would be highly recommended, along with CUDA toolkit v10.2.
 
+For your convenience, we also provide a TensorFlow implementation of our code. It can be accessed through this link: https://github.com/galidor/ITU_Beam_Selection_TF.git
+
 ## Source files:
 There are 4 Python files in this repo, requirements.txt, and this README file:
 * models.py - definition of our model called Baseline2D.
