@@ -1,17 +1,14 @@
 # ITU Beam Selection Challenge
 
-###### This repo contains our submission for the ITU Artificial Intelligence/Machine Learning in 5G Challenge<sup>1</sup>, particularly the ML5G-PHY [beam selection] task.
+###### This repo contains the code for the paper Federated mmWave Beam Selection Utilizing LIDAR Data
 
 ## Authors
-<b>Team Name:</b> Imperial_IPC1
 
-<b>Supervising faculty member</b>: Prof. Deniz Gunduz, Imperial College London, Email: d.gunduz@imperial.ac.uk
-
-<b>Team members</b>:
 * Dr. Mahdi Boloursaz Mashhadi (PostDoc Team Leader), Imperial College London, Email: m.boloursaz-mashhadi@imperial.ac.uk
-* Mr. Tze-Yang Tung, Imperial College London, Email: tze-yang.tung14@imperial.ac.uk
 * Mr. Mikolaj Jankowski, Imperial College London, Email: mikolaj.jankowski17@imperial.ac.uk
+* Mr. Tze-Yang Tung, Imperial College London, Email: tze-yang.tung14@imperial.ac.uk
 * Mr. Szymon Kobus, Imperial College London, Email: szymon.kobus17@imperial.ac.uk
+* <b>Supervisor</b>: Prof. Deniz Gunduz, Imperial College London, Email: d.gunduz@imperial.ac.uk
 
 ## Requirements installation
 I order to run our code, you need PyTorch and Numpy. In order to install them, simply run:
@@ -30,7 +27,7 @@ There are 4 Python files in this repo, requirements.txt, and this README file:
 * beam_test_model.py - code that enables to test previously trained networks and generate .csv files with the predictions.
 
 ## Dataset
-In this work we use Raymobtime<sup>2</sup> dataset, which is a collection of realistic ray-tracing data obtained by simulating traffic in environment highly inspired by real world data. It utilizes SUMO for mobility simulations, Insite for ray-tracing, Cadmapper and Open Street Map for importing realistic outdoor scenarios. The dataset is divided into smaller sets, with different frequencies considered, various number of receivers, and environments. For our Challenge submission, we trained on the s008 dataset (we combined both training and validation subsets) and validated on s009. 
+In this work we use Raymobtime<sup>2</sup> dataset, which is a collection of realistic ray-tracing data obtained by simulating traffic in environment highly inspired by real world data. It utilizes SUMO for mobility simulations, Insite for ray-tracing, Cadmapper and Open Street Map for importing realistic outdoor scenarios. The dataset is divided into smaller sets, with different frequencies considered, various number of receivers, and environments. In this work, we trained on the s008 dataset (we combined both training and validation subsets) and validated on s009. 
 
 ## Model training
 In order to train our network, you need to run the following command:
@@ -58,6 +55,7 @@ $ python beam_test_model.py --lidar_test_data <path to the LIDAR baseline test .
 If you have any further questions related to this repo, feel free to contact me at mikolaj.jankowski17@imperial.ac.uk or raise an Issue within this repo. I'll do my best to reply as soon as possible.
    
 ## References
-1. Challenge website: https://www.itu.int/en/ITU-T/AI/challenge/2020/Pages/default.aspx
-2. Raymobtime dataset: https://www.lasse.ufpa.br/raymobtime/
-3. A. Klautau, P. Batista, N. González-Prelcic, Y. Wang and R. W. Heath Jr., “5G MIMO Data for Machine Learning: Application to Beam-Selection using Deep Learning” in 2018 Information Theory and Applications Workshop (ITA).
+1. M. B. Mashadi, M. Jankowski, T-Y. Tung, S. Kobus, D. Gunduz, “Federated mmWave Beam Selection Utilizing LIDAR Data”, arXiv:2102.02802, link: https://arxiv.org/abs/2102.02802
+2. ITU AI/ML in 5G Challenge website: https://www.itu.int/en/ITU-T/AI/challenge/2020/Pages/default.aspx
+3. Raymobtime dataset: https://www.lasse.ufpa.br/raymobtime/
+4. A. Klautau, P. Batista, N. González-Prelcic, Y. Wang and R. W. Heath Jr., “5G MIMO Data for Machine Learning: Application to Beam-Selection using Deep Learning” in 2018 Information Theory and Applications Workshop (ITA).
